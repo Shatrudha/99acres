@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import MobileApps from "./pages/MobileApps";
 import Testimonials from "./pages/Testimonials";
+import ForgotPassword from "./pages/ForgotPassword";
 import OwnerServices from "./pages/OwnerServices";
 import Buy from "./pages/Buy";
 import Rent from "./pages/Rent";
@@ -25,6 +26,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/forgotPassword/showForm" element={<ForgotPassword />} />
       <Route path="/mobile-apps" element={<MobileApps />} />
       <Route path="/testimonials" element={<Testimonials />} />
       <Route path="/owner-services" element={<OwnerServices />} />

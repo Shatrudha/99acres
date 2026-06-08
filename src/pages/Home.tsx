@@ -32,6 +32,8 @@ import ownerServiceImage from "../assets/owner-service.png";
 import pgColivingImage from "../assets/pg-coliving.webp";
 import mobileAppBanner from "../assets/mobile-app-banner.webp";
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 const exploreCards = [
   {
@@ -90,6 +92,146 @@ const [sideMenuOpen, setSideMenuOpen] = useState(false);
 const [viewNumberPopupOpen, setViewNumberPopupOpen] = useState(false);
 const [activeHeroSlide, setActiveHeroSlide] = useState(0);
 const [showStickyHeader, setShowStickyHeader] = useState(false);
+
+const [loginModalOpen, setLoginModalOpen] = useState(false);
+const [loginStep, setLoginStep] = useState<"phone" | "otp" | "call" | "email">(
+  "phone"
+);
+const [loginCountryCode, setLoginCountryCode] = useState("+91");
+const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
+const [loginPhone, setLoginPhone] = useState("");
+const [loginPhoneTouched, setLoginPhoneTouched] = useState(false);
+const [otpValues, setOtpValues] = useState(["", "", "", ""]);
+const [missedCallSeconds, setMissedCallSeconds] = useState(118);
+const [loginEmail, setLoginEmail] = useState("");
+const [loginPassword, setLoginPassword] = useState("");
+const [loginError, setLoginError] = useState(false);
+const [otpError, setOtpError] = useState("");
+const [authLoading, setAuthLoading] = useState(false);
+
+const handleSendOtp = async () => {
+  setLoginError(false);
+  setOtpError("");
+
+  const isValidIndianMobile = /^[6-9][0-9]{9}$/.test(loginPhone);
+
+  if (!isValidIndianMobile) {
+    setLoginPhoneTouched(true);
+    setLoginError(true);
+    return;
+  }
+
+  try {
+    setAuthLoading(true);
+
+    const res = await fetch(`${API_BASE_URL}/api/auth/send-otp`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        countryCode: loginCountryCode,
+        phone: loginPhone,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      setLoginError(true);
+      setOtpError(data.message || "Unable to send OTP. Please try again.");
+      return;
+    }
+
+    console.log("Demo OTP:", data.demoOtp);
+
+    setOtpValues(["", "", "", ""]);
+    setLoginStep("otp");
+  } catch (error) {
+    console.error(error);
+    setLoginError(true);
+    setOtpError("Backend is not running. Please start backend on port 5000.");
+  } finally {
+    setAuthLoading(false);
+  }
+};
+
+const handleVerifyOtp = async () => {
+  setOtpError("");
+
+  const otp = otpValues.join("");
+
+  if (otp.length !== 4) {
+    setOtpError("Please enter 4 digit OTP");
+    return;
+  }
+
+  try {
+    setAuthLoading(true);
+
+    const res = await fetch(`${API_BASE_URL}/api/auth/verify-otp`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+   body: JSON.stringify({
+  countryCode: loginCountryCode,
+  phone: loginPhone,
+  otp,
+}),
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+      setOtpError(data.message || "Incorrect OTP. Please enter the correct OTP.");
+      return;
+    }
+
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    setLoginModalOpen(false);
+    setLoginStep("phone");
+    setLoginPhone("");
+    setOtpValues(["", "", "", ""]);
+    setOtpError("");
+  } catch (error) {
+    console.error(error);
+    setOtpError("Something went wrong. Please try again.");
+  } finally {
+    setAuthLoading(false);
+  }
+};
+const countryCodes = ["+91", "+44", "+1", "+61", "+60", "+971", "+93", "+355", "+213", "+1684"];
+
+const isValidLoginPhone = /^[6-9][0-9]{9}$/.test(loginPhone);
+const showLoginPhoneError = loginPhoneTouched && loginPhone.length > 0 && !isValidLoginPhone;
+
+useEffect(() => {
+  if (!loginModalOpen || loginStep !== "call") return;
+
+  setMissedCallSeconds(118);
+
+  const timer = window.setInterval(() => {
+    setMissedCallSeconds((prev) => {
+      if (prev <= 0) {
+        window.clearInterval(timer);
+        return 0;
+      }
+
+      return prev - 1;
+    });
+  }, 1000);
+
+  return () => window.clearInterval(timer);
+}, [loginModalOpen, loginStep]);
+
+const missedCallMinutes = Math.floor(missedCallSeconds / 60);
+const missedCallRemainingSeconds = missedCallSeconds % 60;
+const missedCallTimeText = `${missedCallMinutes}:${String(
+  missedCallRemainingSeconds
+).padStart(2, "0")}`;
 
 const [cityPopupType, setCityPopupType] = useState<"Residential" | "Commercial">(
   "Residential"
@@ -344,11 +486,25 @@ useEffect(() => {
   handleScroll();
   window.addEventListener("scroll", handleScroll);
 
+  const hasSeenLoginPopup = localStorage.getItem("hasSeenLoginPopup");
+
+  if (!hasSeenLoginPopup) {
+    const timer = window.setTimeout(() => {
+      setLoginModalOpen(true);
+      setLoginStep("phone");
+      localStorage.setItem("hasSeenLoginPopup", "true");
+    }, 900);
+
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }
+
   return () => {
     window.removeEventListener("scroll", handleScroll);
   };
 }, []);
-
   const cityList = [
     "Property in Delhi / NCR",
     "Property in Mumbai",
@@ -717,7 +873,7 @@ return (
   </header>
 )}
 
-    <section className="relative h-[430px] overflow-visible bg-[#050918] text-white">
+   <section className="relative h-[360px] overflow-visible bg-[#050918] text-white md:h-[430px]">
   <div className="absolute inset-0 overflow-hidden">
     <div
       className="flex h-full transition-transform duration-700 ease-in-out"
@@ -755,28 +911,427 @@ return (
 >
   <ChevronRight size={28} />
 </button>
-{(activeMenu || cityPopupOpen || viewNumberPopupOpen) && (
+{(activeMenu || cityPopupOpen || viewNumberPopupOpen || loginModalOpen) && (
   <div
     className={`fixed inset-0 transition-opacity duration-200 ${
-      viewNumberPopupOpen ? "z-[180] bg-black/75" : "z-[80] bg-black/35"
+      viewNumberPopupOpen || loginModalOpen
+        ? "z-[180] bg-black/70"
+        : "z-[80] bg-black/35"
     }`}
     onClick={() => {
       closeMenu();
       setCityPopupOpen(false);
       setViewNumberPopupOpen(false);
+      setLoginModalOpen(false);
+      setLoginError(false);
     }}
   />
 )}
 
+{loginModalOpen && (
+  <div
+    className="fixed left-1/2 top-1/2 z-[220] w-[94vw] max-w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white px-6 py-7 text-[#06152e] shadow-2xl md:px-7 md:py-8"
+    onClick={(e) => e.stopPropagation()}
+  >
+    {loginStep === "phone" ? (
+
+  <>
+  <button
+    type="button"
+    onClick={() => {
+      setLoginModalOpen(false);
+      setLoginError(false);
+      setCountryDropdownOpen(false);
+      setLoginPhoneTouched(false);
+    }}
+    className="absolute right-6 top-6 text-slate-600 hover:text-[#06152e]"
+  >
+    <X size={28} strokeWidth={2.3} />
+  </button>
+
+  <h2 className="text-[30px] font-extrabold leading-tight md:text-[34px]">
+    Login / Register
+  </h2>
+
+  <p className="mt-3 text-[18px] text-slate-500">
+    Please enter your Phone Number
+  </p>
+
+  <div
+    className={`relative mt-10 h-[78px] border px-3 py-2 ${
+      showLoginPhoneError
+        ? "border-red-500"
+        : loginPhone.length > 0
+        ? "border-blue-500"
+        : "border-slate-200"
+    }`}
+  >
+    <p
+      className={`text-[13px] font-bold ${
+        showLoginPhoneError ? "text-red-600" : "text-slate-400"
+      }`}
+    >
+      {showLoginPhoneError ? "That looks like an invalid number" : "Phone Number"}
+    </p>
+
+    <div className="mt-2 flex items-center">
+      <div className="relative border-r border-slate-200 pr-4">
+        <button
+          type="button"
+          onClick={() => setCountryDropdownOpen((prev) => !prev)}
+          className="flex items-center gap-2 text-[17px] text-[#06152e]"
+        >
+          {loginCountryCode}
+          <ChevronDown size={15} className="text-slate-400" />
+        </button>
+
+        {countryDropdownOpen && (
+          <div className="absolute left-[-12px] top-[30px] z-[260] max-h-[250px] w-[88px] overflow-y-auto border border-slate-200 bg-white text-[16px] shadow-lg">
+            {countryCodes.map((code) => (
+              <button
+                key={code}
+                type="button"
+                onClick={() => {
+                  setLoginCountryCode(code);
+                  setCountryDropdownOpen(false);
+                }}
+                className={`block w-full px-3 py-2 text-left hover:bg-slate-100 ${
+                  loginCountryCode === code
+                    ? "bg-slate-600 text-white hover:bg-slate-600"
+                    : "text-[#06152e]"
+                }`}
+              >
+                {code}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <input
+        autoFocus
+        value={loginPhone}
+        onChange={(e) => {
+          const onlyNumbers = e.target.value.replace(/\D/g, "").slice(0, 10);
+          setLoginPhone(onlyNumbers);
+          setLoginPhoneTouched(true);
+        }}
+        onBlur={() => setLoginPhoneTouched(true)}
+        className="ml-5 w-full text-[19px] outline-none"
+        inputMode="numeric"
+      />
+    </div>
+  </div>
+
+ <button
+  type="button"
+  disabled={!isValidLoginPhone || authLoading}
+  onClick={handleSendOtp}
+  className={`mt-24 h-[58px] w-full rounded text-[22px] font-extrabold text-white shadow ${
+    isValidLoginPhone
+      ? "bg-[#0b84df] hover:bg-[#0878cc]"
+      : "cursor-not-allowed bg-[#7dbbeb]"
+  }`}
+>
+  {authLoading ? "Please wait..." : "Continue"}
+</button>
+
+  <button
+    type="button"
+    onClick={() => {
+      setLoginStep("email");
+      setLoginError(false);
+      setCountryDropdownOpen(false);
+    }}
+    className="mt-4 flex h-[58px] w-full items-center justify-center gap-3 border border-slate-300 text-[19px] font-extrabold text-[#06152e]"
+  >
+    <span className="text-[22px]">✉️</span>
+    Login with Email
+  </button>
+
+  <p className="mt-4 text-[13px] text-slate-500">
+    By clicking you agree to{" "}
+    <button type="button" className="font-bold text-blue-600">
+      Terms and Conditions
+    </button>
+  </p>
+</>
+      ) : loginStep === "otp" ? (
+      <>
+        <button
+          type="button"
+          onClick={() => {
+            setLoginModalOpen(false);
+            setLoginError(false);
+          }}
+          className="absolute right-6 top-6 text-slate-600 hover:text-[#06152e]"
+        >
+          <X size={28} strokeWidth={2.3} />
+        </button>
+
+        <h2 className="text-[31px] font-extrabold leading-tight md:text-[36px]">
+          Verify your number
+        </h2>
+
+        <div className="mt-2 flex items-center gap-3 text-[30px] font-extrabold text-[#06152e] md:text-[34px]">
+          <span>
+            {loginCountryCode}-{loginPhone}
+          </span>
+
+          <button
+            type="button"
+            onClick={() => setLoginStep("phone")}
+            className="text-blue-600"
+          >
+            ✎
+          </button>
+        </div>
+
+        <p className="mt-20 text-[20px] font-bold text-[#06152e]">
+          Enter your 4 digit OTP
+        </p>
+
+        <div className="mt-5 flex gap-6">
+          {otpValues.map((value, index) => (
+            <input
+              key={index}
+              value={value}
+              onChange={(e) => {
+                const digit = e.target.value.replace(/\D/g, "").slice(0, 1);
+                setOtpValues((prev) => {
+                  const next = [...prev];
+                  next[index] = digit;
+                  return next;
+                });
+
+                if (digit) {
+                  const nextInput = document.getElementById(`otp-${index + 1}`);
+                  nextInput?.focus();
+                }
+              }}
+              id={`otp-${index}`}
+              inputMode="numeric"
+              className={`h-[78px] w-[78px] rounded border text-center text-[28px] font-bold outline-none ${
+                index === 0
+                  ? "border-2 border-[#06152e]"
+                  : "border border-slate-200"
+              }`}
+            />
+          ))}
+        </div>
+
+        <p className="mt-5 text-[18px] text-slate-500">
+          Haven&apos;t received yet?{" "}
+          <button type="button" className="font-bold text-blue-600">
+            Resend OTP
+          </button>
+        </p>
+
+       {otpError && (
+  <p className="mt-4 text-[15px] font-semibold text-red-600">
+    {otpError}
+  </p>
+)}
+
+<button
+  type="button"
+  onClick={handleVerifyOtp}
+  disabled={authLoading || otpValues.join("").length !== 4}
+  className={`mt-8 h-[58px] w-full rounded text-[18px] font-extrabold text-white ${
+    otpValues.join("").length === 4
+      ? "bg-[#0b84df]"
+      : "cursor-not-allowed bg-[#78b9ea]"
+  }`}
+>
+  {authLoading ? "Verifying..." : "Verify & Continue"}
+</button>
+
+        <button
+          type="button"
+          onClick={() => setLoginStep("call")}
+          className="mt-5 h-[58px] w-full rounded border border-blue-600 text-[21px] font-extrabold text-blue-600"
+        >
+          Or, Verify via Missed Call
+        </button>
+      </>
+    ) : loginStep === "call" ? (
+      <>
+        <button
+          type="button"
+          onClick={() => {
+            setLoginModalOpen(false);
+            setLoginError(false);
+          }}
+          className="absolute right-6 top-6 text-slate-600 hover:text-[#06152e]"
+        >
+          <X size={28} strokeWidth={2.3} />
+        </button>
+
+        <h2 className="text-[31px] font-extrabold leading-tight md:text-[36px]">
+          Verify your number
+        </h2>
+
+        <div className="mt-2 flex items-center gap-3 text-[30px] font-extrabold text-[#06152e] md:text-[34px]">
+          <span>
+            {loginCountryCode}-{loginPhone}
+          </span>
+
+          <button
+            type="button"
+            onClick={() => setLoginStep("phone")}
+            className="text-blue-600"
+          >
+            ✎
+          </button>
+        </div>
+
+        <p className="mt-24 text-[24px] leading-9 text-slate-500">
+          By giving a missed call to
+          <br />
+          <span className="text-[30px] font-bold text-slate-600">
+            +91-9870284735
+          </span>
+        </p>
+<div className="mt-16 h-[8px] overflow-hidden rounded-full bg-slate-200">
+  <div
+    className="h-full rounded-full bg-blue-600 transition-all duration-1000"
+    style={{
+      width: `${((118 - missedCallSeconds) / 118) * 100}%`,
+    }}
+  />
+</div>
+
+<p className="mt-2 text-[16px] text-slate-500">
+  Session expires in <b>{missedCallTimeText} mins</b>
+</p>
+
+<button
+  type="button"
+  onClick={() => setLoginStep("otp")}
+  className="mt-7 h-[56px] w-full rounded bg-[#0b84df] text-[18px] font-extrabold text-white"
+>
+  Cancel
+</button>
+      </>
+    ) : (
+      <>
+        <div className="mb-5 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => {
+             setLoginStep("phone");
+setLoginError(false);
+setLoginPhoneTouched(false);
+setCountryDropdownOpen(false);
+            }}
+            className="text-slate-600 hover:text-[#06152e]"
+          >
+            <ChevronLeft size={28} strokeWidth={2.5} />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setLoginModalOpen(false);
+              setLoginError(false);
+            }}
+            className="text-slate-600 hover:text-[#06152e]"
+          >
+            <X size={28} strokeWidth={2.3} />
+          </button>
+        </div>
+
+        <h2 className="text-[28px] font-extrabold leading-tight md:text-[30px]">
+          Multiple email ids linked
+        </h2>
+
+        <p className="mt-3 text-[17px] leading-6 text-slate-500">
+          Your mobile number is linked with multiple email ids.
+          <br />
+          Please login with the below details.
+        </p>
+
+        <div className="mt-1 h-[68px] border border-slate-200 px-3 py-2">
+          <p className="text-[12px] font-bold text-slate-400">
+            Email Id/Username
+          </p>
+
+          <input
+            autoFocus
+            value={loginEmail}
+            onChange={(e) => setLoginEmail(e.target.value)}
+            className="mt-1 w-full text-[17px] outline-none"
+          />
+        </div>
+
+        <div className="mt-4 flex h-[68px] items-center border border-slate-200 px-3 py-2 focus-within:border-blue-500">
+          <div className="flex-1">
+            <p className="text-[12px] font-bold text-slate-400">
+              Password
+            </p>
+
+            <input
+              type="password"
+              value={loginPassword}
+              onChange={(e) => setLoginPassword(e.target.value)}
+              className="mt-1 w-full text-[17px] outline-none"
+            />
+          </div>
+
+          <span className="text-[24px] text-slate-500">◉</span>
+        </div>
+
+        <button
+          type="button"
+          onClick={() =>
+            window.open(
+              "/forgotPassword/showForm",
+              "_blank",
+              "noopener,noreferrer"
+            )
+          }
+          className="mt-4 block w-full text-right text-[17px] font-extrabold text-blue-600"
+        >
+          Forgot Password
+        </button>
+
+        {loginError && (
+          <p className="mt-4 text-[16px] font-semibold leading-5 text-red-600">
+            Incorrect Credentials. Kindly Register or Click Forgot
+            <br />
+            password to reset
+          </p>
+        )}
+
+        <label className="mt-5 flex items-center gap-2 text-[16px] text-slate-500">
+          <span className="flex h-5 w-5 items-center justify-center bg-blue-600 text-[14px] text-white">
+            ✓
+          </span>
+          Get updates via
+          <span className="font-bold text-green-600">WhatsApp</span>
+        </label>
+
+        <button
+          type="button"
+          onClick={() => setLoginError(true)}
+          className="mt-7 h-[56px] w-full rounded bg-[#0b84df] text-[20px] font-extrabold text-white"
+        >
+          Continue
+        </button>
+      </>
+    )}
+  </div>
+)}
+
 {/* ADD THIS CITY CLICK POPUP HERE */}
 {cityPopupOpen && (
-  <div className="fixed left-[30px] top-[130px] z-[140] w-[900px] overflow-hidden rounded-lg bg-white text-[#06152e] shadow-2xl">
-    <div className="px-10 py-9">
-      <h2 className="text-[34px] font-extrabold">
+  <div className="fixed left-1/2 top-[90px] z-[140] max-h-[82vh] w-[94vw] -translate-x-1/2 overflow-y-auto rounded-lg bg-white text-[#06152e] shadow-2xl md:left-[30px] md:top-[130px] md:w-[900px] md:translate-x-0 md:overflow-hidden">
+    <div className="px-5 py-6 md:px-10 md:py-9">
+      <h2 className="text-[26px] font-extrabold md:text-[34px]">
         Explore real estate in...
       </h2>
 
-    <div className="mt-8 flex items-center gap-11 text-[16px] font-semibold text-slate-400">
+   <div className="mt-8 flex items-center gap-7 overflow-x-auto whitespace-nowrap text-[15px] font-semibold text-slate-400 md:gap-11 md:text-[16px]">
   <button
     type="button"
     onClick={() => setCityPopupTab("buy")}
@@ -822,7 +1377,7 @@ return (
   </button>
 </div>
 
-      <div className="mt-8 flex h-[62px] items-center rounded bg-white shadow-lg">
+     <div className="mt-8 flex min-h-[62px] flex-col rounded bg-white shadow-lg md:h-[62px] md:flex-row md:items-center">
        <button className="flex h-full w-[180px] items-center justify-center gap-2 border-r text-[16px] font-bold">
   {cityPopupType} <ChevronDown size={18} />
 </button>
@@ -845,7 +1400,7 @@ return (
       </div>
     </div>
 
-    <div className="mt-20 flex items-center justify-between rounded-b-lg bg-slate-50 px-10 py-5 text-[16px] text-slate-600">
+   <div className="mt-10 flex flex-col gap-5 rounded-b-lg bg-slate-50 px-5 py-5 text-[15px] text-slate-600 md:mt-20 md:flex-row md:items-center md:justify-between md:px-10 md:text-[16px]">
       <div className="flex items-center gap-10">
         <button>All India</button>
         <button>Dubai</button>
@@ -1029,22 +1584,22 @@ return (
   </div>
 )}
 
-       <header className="relative z-[120] flex h-[72px] items-center justify-between px-[78px]">
+      <header className="relative z-[120] flex h-[64px] items-center justify-between px-4 md:h-[72px] md:px-[78px]">
   <div className="flex h-full items-center gap-6">
     <button
       type="button"
       onClick={() => navigate("/")}
-      className="whitespace-nowrap text-[34px] font-extrabold leading-none tracking-[-1px] text-white"
+     className="whitespace-nowrap text-[28px] font-extrabold leading-none tracking-[-1px] text-white md:text-[34px]"
     >
       99acres
     </button>
 
     {/* All India */}
     <div
-      className="relative h-full"
-      onMouseEnter={() => openMenu("location")}
-      onMouseLeave={closeMenu}
-    >
+  className="relative hidden h-full md:block"
+  onMouseEnter={() => openMenu("location")}
+  onMouseLeave={closeMenu}
+>
       <button className="relative flex h-full items-center gap-2 whitespace-nowrap text-[15px] font-bold text-white">
         All India
         <ChevronDown
@@ -1274,7 +1829,7 @@ return (
 </div>
           </nav>
 
-          <div className="relative z-[121] ml-4 flex items-center gap-3">
+          <div className="relative z-[121] ml-2 flex items-center gap-2 md:ml-4 md:gap-3">
             <button
   onClick={() => navigate("/post-property")}
 className="flex h-[36px] shrink-0 items-center gap-2 whitespace-nowrap rounded-lg bg-white px-4 text-[14px] font-bold text-[#06152e]">
@@ -1288,7 +1843,7 @@ className="flex h-[36px] shrink-0 items-center gap-2 whitespace-nowrap rounded-l
             </button>
 
 <div
-  className="relative"
+  className="relative hidden sm:block"
   onMouseEnter={() => openMenu("contact")}
   onMouseLeave={closeMenu}
 >
@@ -1300,7 +1855,6 @@ className="flex h-[36px] shrink-0 items-center gap-2 whitespace-nowrap rounded-l
   >
     <Headphones size={21} />
   </button>
-
   {activeMenu === "contact" && (
     <>
       <div className="absolute right-[-72px] top-[40px] z-[130] h-5 w-[330px]" />
@@ -1381,38 +1935,44 @@ className="flex h-[36px] shrink-0 items-center gap-2 whitespace-nowrap rounded-l
   )}
 </div>
 
-            <div
-  className="relative"
+ <div
+  className="relative block"
   onMouseEnter={() => openMenu("profile")}
   onMouseLeave={closeMenu}
 >
   <button
     type="button"
-    className={`relative flex h-10 w-10 items-center justify-center rounded-full text-white transition hover:bg-white/10 ${
+    onClick={() => setActiveMenu(activeMenu === "profile" ? null : "profile")}
+    className={`relative flex h-9 w-9 items-center justify-center rounded-full text-white transition hover:bg-white/10 md:h-10 md:w-10 ${
       activeMenu === "profile" ? "bg-white/10" : ""
     }`}
   >
-    <UserCircle size={24} />
+    <UserCircle size={23} />
 
     <span className="absolute -right-0.5 top-0 h-2.5 w-2.5 rounded-full bg-red-600 ring-2 ring-[#071026]" />
   </button>
 
   {activeMenu === "profile" && (
     <>
-      <div className="absolute right-[-72px] top-[40px] z-[130] h-5 w-[288px]" />
+           <div className="hidden sm:block absolute right-[-72px] top-[40px] z-[130] h-5 w-[288px]" />
 
-      <div
+         <div
         onMouseEnter={() => openMenu("profile")}
         onMouseLeave={closeMenu}
-        className="absolute right-[-72px] top-[52px] z-[130] w-[288px] rounded-xl bg-white px-8 py-7 text-[#06152e] shadow-2xl"
+        className="fixed left-1/2 top-[78px] z-[300] w-[88vw] max-w-[288px] -translate-x-1/2 rounded-xl bg-white px-7 py-6 text-[#06152e] shadow-2xl sm:absolute sm:right-[-72px] sm:left-auto sm:top-[52px] sm:w-[288px] sm:translate-x-0 sm:px-8 sm:py-7"
       >
-        <button
-          type="button"
-          onClick={() => navigate("/login")}
-          className="mb-8 block text-[16px] font-extrabold uppercase text-blue-600 hover:underline"
-        >
-          LOGIN / REGISTER
-        </button>
+      <button
+  type="button"
+  onClick={() => {
+    closeMenu();
+    setLoginModalOpen(true);
+    setLoginStep("phone");
+    setLoginError(false);
+  }}
+  className="mb-8 block text-[16px] font-extrabold uppercase text-blue-600 hover:underline"
+>
+  LOGIN / REGISTER
+</button>
 
         <div className="space-y-6 text-[15px] text-[#20314f]">
           <button
@@ -1471,6 +2031,12 @@ className="flex h-[36px] shrink-0 items-center gap-2 whitespace-nowrap rounded-l
   )}
 </div>
 
+{loginError && otpError && (
+  <p className="mt-3 text-[14px] font-semibold text-red-600">
+    {otpError}
+  </p>
+)}
+
 <button
   type="button"
   onClick={() => {
@@ -1491,7 +2057,7 @@ className="flex h-[36px] shrink-0 items-center gap-2 whitespace-nowrap rounded-l
 
 {/* Search box */}
 <div className="absolute left-1/2 top-[335px] z-[50] w-[78%] max-w-[1180px] -translate-x-1/2 rounded-2xl bg-white text-[#06152e] shadow-2xl">
-<div className="grid h-[76px] grid-cols-[1fr_1fr_1.35fr_1.2fr_1.15fr_1fr_185px] items-center border-b text-center text-[17px] font-bold text-slate-500">
+<div className="grid h-[62px] grid-cols-3 items-center overflow-x-auto border-b text-center text-[14px] font-bold text-slate-500 md:h-[76px] md:grid-cols-[1fr_1fr_1.35fr_1.2fr_1.15fr_1fr_185px] md:text-[17px]">
       <button
       type="button"
       onClick={() => setActiveSearchTab("buy")}
@@ -1585,15 +2151,15 @@ className="flex h-[36px] shrink-0 items-center gap-2 whitespace-nowrap rounded-l
     </button>
   </div>
 
-  <div
-    className={`grid h-[58px] min-w-0 items-center overflow-visible ${
-      activeSearchTab === "commercial"
-        ? "grid-cols-[120px_200px_minmax(0,1fr)_56px_56px_110px]"
-        : activeSearchTab === "projects"
-        ? "grid-cols-[220px_minmax(0,1fr)_56px_110px]"
-        : "grid-cols-[220px_minmax(0,1fr)_56px_56px_110px]"
-    }`}
-  >
+ <div
+  className={`grid h-auto min-w-0 items-center overflow-visible md:h-[58px] ${
+    activeSearchTab === "commercial"
+      ? "grid-cols-1 md:grid-cols-[120px_200px_minmax(0,1fr)_56px_56px_110px]"
+      : activeSearchTab === "projects"
+      ? "grid-cols-1 md:grid-cols-[220px_minmax(0,1fr)_56px_110px]"
+      : "grid-cols-1 md:grid-cols-[220px_minmax(0,1fr)_56px_56px_110px]"
+  }`}
+>
     {activeSearchTab === "commercial" ? (
       <>
         <button className="flex h-full items-center justify-center gap-2 border-r text-[16px] font-bold text-slate-700">
@@ -1641,7 +2207,7 @@ className="flex h-[36px] shrink-0 items-center gap-2 whitespace-nowrap rounded-l
     </div>
 
     {activeSearchTab !== "projects" && (
- <div className="group relative z-[200] mx-auto flex h-11 w-11 items-center justify-center overflow-visible">
+<div className="group relative z-[200] mx-auto hidden h-11 w-11 items-center justify-center overflow-visible md:flex">
   <button
     type="button"
     className="flex h-11 w-11 items-center justify-center rounded-full bg-[#f0f8ff] text-[#0078d7] transition duration-200 hover:bg-[#e6f4ff]"
@@ -1689,7 +2255,7 @@ className="flex h-[36px] shrink-0 items-center gap-2 whitespace-nowrap rounded-l
          <button
       type="button"
       onClick={handleHeroSearch}
-      className="mr-3 rounded-md bg-blue-600 px-5 py-2.5 text-[16px] font-bold text-white shadow hover:bg-blue-700"
+      className="mx-4 mb-4 rounded-md bg-blue-600 px-5 py-2.5 text-[16px] font-bold text-white shadow hover:bg-blue-700 md:mx-0 md:mr-3 md:mb-0"
     >
       Search
     </button>
@@ -1769,13 +2335,13 @@ className="flex h-[36px] shrink-0 items-center gap-2 whitespace-nowrap rounded-l
 </section>
 
 {/* Buy home section */}
-<section className="relative px-10 pb-[150px] pt-[26px]">
+<section className="relative px-4 pb-10 pt-[120px] md:px-10 md:pb-[150px] md:pt-[26px]">
   <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-14 lg:grid-cols-[1.25fr_0.75fr]">
     <div className="overflow-hidden rounded-xl bg-slate-100">
       <img
         src={buyHomeImage}
         alt="Modern living room"
-        className="h-[430px] w-full object-cover"
+       className="h-[260px] w-full object-cover md:h-[430px]"
       />
     </div>
 
@@ -1802,7 +2368,7 @@ className="flex h-[36px] shrink-0 items-center gap-2 whitespace-nowrap rounded-l
     </div>
   </div>
 
-<div className="absolute left-1/2 bottom-[-95px] z-[20] w-[76%] max-w-[1080px] -translate-x-1/2 overflow-hidden rounded-xl bg-white shadow-[0_2px_18px_rgba(15,23,42,0.12)] ring-1 ring-blue-100">
+<div className="relative z-[20] mx-auto mt-6 w-full overflow-hidden rounded-xl bg-white shadow-[0_2px_18px_rgba(15,23,42,0.12)] ring-1 ring-blue-100 md:absolute md:left-1/2 md:bottom-[-95px] md:w-[76%] md:max-w-[1080px] md:-translate-x-1/2">
   <div className="grid grid-cols-[245px_1fr]">
     <div className="border-r border-slate-100 px-7 py-5">
       <h2 className="text-[23px] font-extrabold leading-tight text-[#06152e]">
@@ -1819,7 +2385,7 @@ className="flex h-[36px] shrink-0 items-center gap-2 whitespace-nowrap rounded-l
     </div>
 
     <div className="px-7 py-5">
-     <div className="flex gap-12 border-b border-slate-100 text-[14px] text-slate-400">
+     <div className="flex gap-8 overflow-x-auto whitespace-nowrap border-b border-slate-100 text-[14px] text-slate-400 md:gap-12">
   {homeArticleTabs.map((tab) => (
     <button
       key={tab.key}
@@ -1841,7 +2407,7 @@ className="flex h-[36px] shrink-0 items-center gap-2 whitespace-nowrap rounded-l
   ))}
 </div>
 
-     <div className="mt-4 grid grid-cols-2 gap-x-8 gap-y-4">
+     <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-x-8 md:gap-y-4">
   {homeArticleData[homeArticleTab].map((article, index) => (
     <article
       key={`${homeArticleTab}-${article.title}`}
@@ -2265,8 +2831,8 @@ className="absolute right-[-14px] top-1/2 flex h-10 w-10 -translate-y-1/2 items-
     </div>
   </div>
 
-<div className="absolute left-1/2 bottom-[-95px] z-[20] w-[76%] max-w-[1080px] -translate-x-1/2 overflow-hidden rounded-xl bg-white shadow-[0_2px_18px_rgba(15,23,42,0.12)] ring-1 ring-blue-100">
-  <div className="grid grid-cols-[245px_1fr]">
+<div className="relative z-[20] mx-auto mt-6 w-full overflow-hidden rounded-xl bg-white shadow-[0_2px_18px_rgba(15,23,42,0.12)] ring-1 ring-blue-100 md:absolute md:left-1/2 md:bottom-[-95px] md:w-[76%] md:max-w-[1080px] md:-translate-x-1/2">
+  <div className="grid grid-cols-1 md:grid-cols-[245px_1fr]">
     <div className="border-r border-slate-100 px-7 py-5">
       <h2 className="text-[23px] font-extrabold leading-tight text-[#06152e]">
   Best Renting
@@ -3515,14 +4081,19 @@ className="absolute right-[-14px] top-1/2 flex h-10 w-10 -translate-y-1/2 items-
 
     <aside className="fixed right-0 top-0 z-[310] h-screen w-[430px] max-w-[92vw] overflow-y-auto bg-white text-[#06152e] shadow-2xl">
       <div className="sticky top-0 z-10 flex items-center justify-between bg-white px-7 py-5 shadow-sm">
-        <button
-          type="button"
-          onClick={() => navigate("/login")}
-          className="flex items-center gap-3 text-[18px] font-semibold text-blue-600"
-        >
-          <CircleUserRound size={30} className="text-slate-600" />
-          LOGIN / REGISTER
-        </button>
+     <button
+  type="button"
+  onClick={() => {
+    setSideMenuOpen(false);
+    setLoginModalOpen(true);
+    setLoginStep("phone");
+    setLoginError(false);
+  }}
+  className="flex items-center gap-3 text-[18px] font-semibold text-blue-600"
+>
+  <CircleUserRound size={30} className="text-slate-600" />
+  LOGIN / REGISTER
+</button>
 
         <button
           type="button"
@@ -3693,7 +4264,7 @@ function MegaMenu({
 
   return (
     <div
-  className={`absolute top-[88px] z-[130] grid w-[980px] grid-cols-[235px_1fr_260px] overflow-hidden rounded-lg bg-white text-[#06152e] shadow-2xl ${className}`}
+ className={`absolute top-[88px] z-[130] hidden w-[980px] grid-cols-[235px_1fr_260px] overflow-hidden rounded-lg bg-white text-[#06152e] shadow-2xl lg:grid ${className}`}
 >
       <aside className="bg-slate-100 px-7 py-8">
         <div className="space-y-7 text-[14px] font-bold text-slate-600">
@@ -3907,7 +4478,7 @@ function OwnerMenu({ className }: { className: string }) {
 
   return (
 <div
-  className={`absolute top-[88px] z-[130] grid h-[380px] w-[1040px] grid-cols-[270px_1fr_285px] overflow-hidden rounded-lg bg-white text-[#06152e] shadow-2xl ${className}`}
+ className={`absolute top-[88px] z-[130] hidden h-[380px] w-[1040px] grid-cols-[270px_1fr_285px] overflow-hidden rounded-lg bg-white text-[#06152e] shadow-2xl lg:grid ${className}`}
 >
       <aside className="bg-slate-100 px-9 py-8">
         <div className="space-y-6 text-[14px] font-bold text-slate-600">
