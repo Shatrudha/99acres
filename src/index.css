@@ -10304,9 +10304,9 @@ a {
   }
 }
 
-/* FINAL MOBILE TYPOGRAPHY FIX - keep this at very bottom */
+/* FINAL COMPACT MOBILE TEXT FIX - keep this as LAST code in index.css */
 @media (max-width: 768px) {
-  /* Common page main headings */
+  /* Main page headings - smaller like real 99acres */
   .mobile-99-home h1,
   .mobile-search-page-99 h1,
   .mobile-owner-page-99 h1,
@@ -10321,12 +10321,12 @@ a {
   .mobile-feedback-page-99 h1,
   .mobile-my-property-page-99 h1,
   .mobile-price-trends-page-99 h1 {
-    font-size: 27px !important;
-    line-height: 1.22 !important;
-    letter-spacing: -0.35px !important;
+    font-size: 22px !important;
+    line-height: 1.24 !important;
+    letter-spacing: -0.25px !important;
   }
 
-  /* Common section headings */
+  /* Section headings */
   .mobile-99-home h2,
   .mobile-search-page-99 h2,
   .mobile-owner-page-99 h2,
@@ -10341,12 +10341,12 @@ a {
   .mobile-feedback-page-99 h2,
   .mobile-my-property-page-99 h2,
   .mobile-price-trends-page-99 h2 {
-    font-size: 23px !important;
-    line-height: 1.22 !important;
-    letter-spacing: -0.25px !important;
+    font-size: 20px !important;
+    line-height: 1.25 !important;
+    letter-spacing: -0.2px !important;
   }
 
-  /* Small headings inside cards */
+  /* Card headings */
   .mobile-99-home h3,
   .mobile-search-page-99 h3,
   .mobile-owner-page-99 h3,
@@ -10361,11 +10361,11 @@ a {
   .mobile-feedback-page-99 h3,
   .mobile-my-property-page-99 h3,
   .mobile-price-trends-page-99 h3 {
-    font-size: 18px !important;
+    font-size: 16px !important;
     line-height: 1.25 !important;
   }
 
-  /* Paragraph / subtitle text */
+  /* Paragraphs / subtitles */
   .mobile-99-home p,
   .mobile-search-page-99 p,
   .mobile-owner-page-99 p,
@@ -10380,9 +10380,281 @@ a {
   .mobile-feedback-page-99 p,
   .mobile-my-property-page-99 p,
   .mobile-price-trends-page-99 p {
-    font-size: 15px !important;
-    line-height: 1.38 !important;
+    font-size: 13px !important;
+    line-height: 1.35 !important;
   }
+
+  /* Strong text inside all cards */
+  .mobile-99-home strong,
+  .mobile-search-page-99 strong,
+  .mobile-owner-page-99 strong,
+  .mobile-new-project-page-99 strong,
+  .mobile-insights-page-99 strong,
+  .mobile-post-property-page-99 strong,
+  .mobile-shortlist-page-99 strong,
+  .mobile-localities-page-99 strong,
+  .mobile-plot-page-99 strong,
+  .mobile-invest-page-99 strong,
+  .mobile-knowledge-page-99 strong,
+  .mobile-feedback-page-99 strong,
+  .mobile-my-property-page-99 strong,
+  .mobile-price-trends-page-99 strong {
+    font-size: 15px !important;
+    line-height: 1.25 !important;
+  }
+
+  /* Span / small / em text */
+  .mobile-99-home span,
+  .mobile-search-page-99 span,
+  .mobile-owner-page-99 span,
+  .mobile-new-project-page-99 span,
+  .mobile-insights-page-99 span,
+  .mobile-post-property-page-99 span,
+  .mobile-shortlist-page-99 span,
+  .mobile-localities-page-99 span,
+  .mobile-plot-page-99 span,
+  .mobile-invest-page-99 span,
+  .mobile-knowledge-page-99 span,
+  .mobile-feedback-page-99 span,
+  .mobile-my-property-page-99 span,
+  .mobile-price-trends-page-99 span,
+  .mobile-99-home small,
+  .mobile-search-page-99 small,
+  .mobile-owner-page-99 small,
+  .mobile-new-project-page-99 small,
+  .mobile-insights-page-99 small,
+  .mobile-post-property-page-99 small,
+  .mobile-shortlist-page-99 small,
+  .mobile-localities-page-99 small,
+  .mobile-plot-page-99 small,
+  .mobile-invest-page-99 small,
+  .mobile-knowledge-page-99 small,
+  .mobile-feedback-page-99 small,
+  .mobile-my-property-page-99 small,
+  .mobile-price-trends-page-99 small,
+  .mobile-99-home em,
+  .mobile-search-page-99 em,
+  .mobile-owner-page-99 em,
+  .mobile-new-project-page-99 em,
+  .mobile-insights-page-99 em,
+  .mobile-post-property-page-99 em,
+  .mobile-shortlist-page-99 em,
+  .mobile-localities-page-99 em,
+  .mobile-plot-page-99 em,
+  .mobile-invest-page-99 em,
+  .mobile-knowledge-page-99 em,
+  .mobile-feedback-page-99 em,
+  .mobile-my-property-page-99 em,
+  .mobile-price-trends-page-99 em {
+    font-size: 13px !important;
+    line-height: 1.3 !important;
+  }
+
+  /* Buttons text */
+  .mobile-99-home button,
+  .mobile-search-page-99 button,
+  .mobile-owner-page-99 button,
+  .mobile-new-project-page-99 button,
+  .mobile-insights-page-99 button,
+  .mobile-post-property-page-99 button,
+  .mobile-shortlist-page-99 button,
+  .mobile-localities-page-99 button,
+  .mobile-plot-page-99 button,
+  .mobile-invest-page-99 button,
+  .mobile-knowledge-page-99 button,
+  .mobile-feedback-page-99 button,
+  .mobile-my-property-page-99 button,
+  .mobile-price-trends-page-99 button {
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Big blue / outline CTA buttons */
+  .mobile-blue-full-btn-99,
+  .mobile-outline-blue-btn-99,
+  .mobile-outline-btn-99,
+  .mobile-view-all-localities-99,
+  .mobile-view-all-link-99,
+  .mobile-insights-view-all-99,
+  .mobile-search-footer-99 button,
+  .mobile-np-actions-99 button,
+  .mobile-owner-contact-row-99 button:nth-child(2),
+  .mobile-invest-submit-99 {
+    font-size: 15px !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Home top section */
+  .mobile-app-title {
+    font-size: 16px !important;
+    line-height: 1.35 !important;
+  }
+
+  .mobile-logo-99 {
+    font-size: 24px !important;
+  }
+
+  .mobile-post-99 {
+    font-size: 13px !important;
+  }
+
+  .mobile-category-btn-99 strong {
+    font-size: 13px !important;
+  }
+
+  .mobile-search-card-99 span {
+    font-size: 16px !important;
+  }
+
+  .mobile-recent-label-99 p,
+  .mobile-recent-row-99 button {
+    font-size: 13px !important;
+  }
+
+  .mobile-recommended-99 h2 {
+    font-size: 21px !important;
+  }
+
+  .mobile-recommended-99 p {
+    font-size: 13px !important;
+  }
+
+  .mobile-property-card-99 strong {
+    font-size: 13px !important;
+  }
+
+  .mobile-property-card-99 span {
+    font-size: 12px !important;
+  }
+
+  /* Profile page compact */
+  .mobile-inner-page-99 .mobile-inner-logo-99 {
+    font-size: 24px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-hero-99 {
+    min-height: 300px !important;
+    padding: 38px 22px 28px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-big-avatar-99 {
+    width: 96px !important;
+    height: 96px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-big-avatar-99 svg {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-login-click-99 h1,
+  .mobile-inner-page-99 .mobile-profile-hero-99 h1 {
+    font-size: 18px !important;
+    line-height: 1.18 !important;
+    margin-top: 16px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-login-click-99 p,
+  .mobile-inner-page-99 .mobile-profile-hero-99 p {
+    font-size: 12px !important;
+    line-height: 1.35 !important;
+    max-width: 240px !important;
+    margin-top: 12px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-list-99 button {
+    min-height: 54px !important;
+    grid-template-columns: 34px 1fr 18px !important;
+    padding: 0 20px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-list-99 span {
+    font-size: 20px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-list-99 strong {
+    font-size: 16px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-list-99 em {
+    font-size: 24px !important;
+  }
+
+  /* Login modal compact */
+  .mobile-login-sheet-real-99 {
+    min-height: 56vh !important;
+    max-height: 80vh !important;
+    padding: 46px 36px 86px !important;
+    border-radius: 28px 28px 0 0 !important;
+  }
+
+  .mobile-login-sheet-real-99 h2 {
+    font-size: 21px !important;
+    line-height: 1.12 !important;
+  }
+
+  .mobile-login-sheet-real-99 > p {
+    margin-top: 9px !important;
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+  }
+
+  .mobile-login-phone-box-99 {
+    height: 74px !important;
+    margin-top: 42px !important;
+    padding: 10px 12px !important;
+  }
+
+  .mobile-login-phone-box-99 label {
+    font-size: 13px !important;
+  }
+
+  .mobile-login-phone-box-99 > div {
+    margin-top: 10px !important;
+    grid-template-columns: 62px 1px 1fr !important;
+    gap: 12px !important;
+  }
+
+  .mobile-login-phone-box-99 button {
+    font-size: 17px !important;
+  }
+
+  .mobile-login-phone-box-99 span {
+    height: 30px !important;
+  }
+
+  .mobile-login-phone-box-99 input {
+    font-size: 17px !important;
+    height: 28px !important;
+  }
+
+  .mobile-login-continue-99 {
+    height: 48px !important;
+    margin-top: 18px !important;
+    font-size: 16px !important;
+  }
+
+  .mobile-login-email-99 {
+    margin-top: 36px !important;
+    font-size: 12px !important;
+    line-height: 1.25 !important;
+  }
+
+  .mobile-login-email-99 span {
+    font-size: 12px !important;
+  }
+
+  /* Bottom nav exact compact */
+  .mobile-bottom-nav-99 button strong {
+    font-size: 10px !important;
+  }
+
+  .mobile-bottom-nav-99 button span {
+    font-size: 19px !important;
+  }
+}
 
   /* Card title text that was looking too big */
   .mobile-menu-action-card-99 h3,
@@ -10514,7 +10786,6 @@ a {
   .mobile-login-email-99 span {
     font-size: 15px !important;
   }
-}
 
 /* FINAL LOGIN MODAL SIZE FIX - keep this at very bottom */
 @media (max-width: 768px) {
@@ -10605,5 +10876,60 @@ a {
     margin-top: 10px !important;
     font-size: 13px !important;
     line-height: 1.25 !important;
+  }
+}
+/* FINAL MOBILE CATEGORY GAP FIX - keep this at very bottom */
+@media (max-width: 768px) {
+  .mobile-category-strip-99 {
+    height: 88px !important;
+    gap: 14px !important;
+    padding: 8px 10px 10px !important;
+    align-items: flex-start !important;
+  }
+
+  .mobile-category-btn-99 {
+    min-width: 58px !important;
+    width: 58px !important;
+  }
+
+  .mobile-category-btn-99 span {
+    height: 34px !important;
+    font-size: 24px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .mobile-category-btn-99 strong {
+    margin-top: 2px !important;
+    font-size: 11px !important;
+    line-height: 1.1 !important;
+    font-weight: 800 !important;
+  }
+}
+/* FINAL FIX - remove fake browser bar from Knowledge Centre page */
+@media (max-width: 768px) {
+  .mobile-knowledge-browser-99 {
+    display: none !important;
+  }
+
+  .mobile-knowledge-page-99 {
+    padding-top: 0 !important;
+  }
+
+  .mobile-knowledge-tabs-99 {
+    top: 0 !important;
+  }
+
+  .mobile-knowledge-top-99 {
+    height: 86px !important;
+    padding: 0 22px !important;
+  }
+
+  .mobile-knowledge-logo-99 b {
+    font-size: 24px !important;
+  }
+
+  .mobile-knowledge-logo-99 span {
+    font-size: 12px !important;
+    line-height: 1.1 !important;
   }
 }
