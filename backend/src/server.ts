@@ -1,277 +1,175 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import axios from "axios";
+import fs from "fs";
+import path from "path";
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors({
-  origin: ["http://localhost:5173", "https://shatrudha.github.io"],
-  credentials: true,
-}));
-
+app.use(cors());
 app.use(express.json());
 
-const PORT = Number(process.env.PORT || 5000);
-const JWT_SECRET = process.env.JWT_SECRET || "secret";
-const OTP_EXPIRY_MINUTES = Number(process.env.OTP_EXPIRY_MINUTES || 2);
+const PORT = process.env.PORT || 5000;
+const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret_key";
+
+const dataDir = path.join(__dirname, "../data");
+const usersFile = path.join(dataDir, "users.json");
 
 type User = {
   id: number;
-  phone: string;
-  countryCode: string;
-  name?: string;
-  email?: string;
-  createdAt: string;
+  name: string;
+  email: string;
+  password: string;
 };
 
-type OtpRecord = {
-  phone: string;
-  countryCode: string;
-  otp: string;
-  expiresAt: number;
-};
-
-const users: User[] = [];
-const otps: OtpRecord[] = [];
-
-const generateOtp = () => {
-  return Math.floor(1000 + Math.random() * 9000).toString();
-};
-
-const createToken = (user: User) => {
-  return jwt.sign(
-    {
-      id: user.id,
-      phone: user.phone,
-      countryCode: user.countryCode,
-    },
-    JWT_SECRET,
-    {
-      expiresIn: "7d",
-    }
-  );
-};
-
-const sendOtpSms = async (phone: string, otp: string) => {
-  const apiKey = process.env.FAST2SMS_API_KEY;
-
-  if (!apiKey) {
-    console.log("Demo OTP:", otp);
-    return;
+const ensureUsersFile = () => {
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
   }
 
-  const response = await axios.post(
-    "https://www.fast2sms.com/dev/bulkV2",
-    {
-      route: "otp",
-      variables_values: otp,
-      numbers: phone,
-    },
-    {
-      headers: {
-        authorization: apiKey,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  if (!fs.existsSync(usersFile)) {
+    fs.writeFileSync(usersFile, JSON.stringify([], null, 2));
+  }
+};
 
-  console.log("Fast2SMS response:", response.data);
+const readUsers = (): User[] => {
+  ensureUsersFile();
+  const data = fs.readFileSync(usersFile, "utf-8");
+  return JSON.parse(data || "[]");
+};
+
+const writeUsers = (users: User[]) => {
+  ensureUsersFile();
+  fs.writeFileSync(usersFile, JSON.stringify(users, null, 2));
 };
 
 app.get("/", (_req, res) => {
   res.json({
-    message: "99acres clone backend running",
-  });
-});
-
-app.post("/api/auth/send-otp", async (req, res) => {
-  const { phone, countryCode } = req.body;
-
-  if (!countryCode) {
-    return res.status(400).json({
-      success: false,
-      message: "Country code is required",
-    });
-  }
-
-  if (!phone || !/^[6-9][0-9]{9}$/.test(phone)) {
-    return res.status(400).json({
-      success: false,
-      message: "That looks like an invalid number",
-    });
-  }
-
-  const otp = generateOtp();
-
-  const existingOtpIndex = otps.findIndex(
-    (item) => item.phone === phone && item.countryCode === countryCode
-  );
-
-  if (existingOtpIndex !== -1) {
-    otps.splice(existingOtpIndex, 1);
-  }
-
-  otps.push({
-    phone,
-    countryCode,
-    otp,
-    expiresAt: Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000,
-  });
-
-  try {
-    await sendOtpSms(phone, otp);
-
-    return res.json({
-      success: true,
-      message: "OTP sent successfully",
-    });
- } catch (error: any) {
-  console.error("OTP SMS Error:", error?.response?.data || error);
-
-  return res.status(500).json({
-    success: false,
-    message:
-      error?.response?.data?.message ||
-      "Unable to send OTP. Please try again.",
-  });
-}
-});
-
-app.post("/api/auth/verify-otp", (req, res) => {
-  const { phone, countryCode, otp } = req.body;
-
-  if (!phone || !countryCode || !otp) {
-    return res.status(400).json({
-      success: false,
-      message: "Phone, country code and OTP are required",
-    });
-  }
-
-  const otpRecord = otps.find(
-    (item) =>
-      item.phone === phone &&
-      item.countryCode === countryCode &&
-      item.otp === otp
-  );
-
-  if (!otpRecord) {
-    return res.status(400).json({
-      success: false,
-      message: "Incorrect OTP. Please enter the correct OTP.",
-    });
-  }
-
-  if (Date.now() > otpRecord.expiresAt) {
-    return res.status(400).json({
-      success: false,
-      message: "OTP expired. Please resend OTP.",
-    });
-  }
-
-  let user = users.find(
-    (item) => item.phone === phone && item.countryCode === countryCode
-  );
-
-  if (!user) {
-    user = {
-      id: users.length + 1,
-      phone,
-      countryCode,
-      createdAt: new Date().toISOString(),
-    };
-
-    users.push(user);
-  }
-
-  const token = createToken(user);
-
-  const otpIndex = otps.findIndex(
-    (item) => item.phone === phone && item.countryCode === countryCode
-  );
-
-  if (otpIndex !== -1) {
-    otps.splice(otpIndex, 1);
-  }
-
-  return res.json({
     success: true,
-    message: "Login successful",
-    token,
-    user,
+    message: "Backend is running",
   });
 });
 
-app.post("/api/auth/login-email", (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({
-      success: false,
-      message: "Email and password are required",
-    });
-  }
-
-  return res.status(400).json({
-    success: false,
-    message: "Incorrect Credentials. Kindly Register or Click Forgot password to reset",
-  });
-});
-
-app.post("/api/auth/forgot-password", (req, res) => {
-  const { email } = req.body;
-
-  if (!email) {
-    return res.status(400).json({
-      success: false,
-      message: "Email is required",
-    });
-  }
-
-  return res.json({
-    success: true,
-    message:
-      "If your email is linked to an existing account, we’ve sent you a password reset link. Check your inbox and click the link to reset your password.",
-  });
-});
-
-app.get("/api/auth/me", (req, res) => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader) {
-    return res.status(401).json({
-      success: false,
-      message: "Unauthorized",
-    });
-  }
-
-  const token = authHeader.replace("Bearer ", "");
-
+app.post("/api/auth/register", async (req, res) => {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as {
-      id: number;
-    };
+    const { name, email, password } = req.body;
 
-    const user = users.find((item) => item.id === decoded.id);
-
-    if (!user) {
-      return res.status(401).json({
+    if (!name || !email || !password) {
+      return res.status(400).json({
         success: false,
-        message: "User not found",
+        message: "Name, email and password are required.",
       });
     }
 
+    const users = readUsers();
+
+    const existingUser = users.find(
+      (user) => user.email.toLowerCase() === String(email).toLowerCase()
+    );
+
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        message: "User already exists with this email.",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser: User = {
+      id: Date.now(),
+      name,
+      email: String(email).toLowerCase(),
+      password: hashedPassword,
+    };
+
+    users.push(newUser);
+    writeUsers(users);
+
+    return res.status(201).json({
+      success: true,
+      message: "Registration successful.",
+    });
+  } catch (error) {
+    console.error("Register error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong during registration.",
+    });
+  }
+});
+
+app.post("/api/auth/login", async (req, res) => {
+  try {
+    const { email, phone, password } = req.body;
+
+    const cleanEmail = email ? String(email).trim().toLowerCase() : "";
+    const cleanPhone = phone ? String(phone).trim() : "";
+
+    if (!cleanEmail && !cleanPhone) {
+      return res.status(400).json({
+        success: false,
+        message: "Email or phone is required.",
+      });
+    }
+
+    // Save email OR phone to Google Sheet. Never save password.
+    if (process.env.GOOGLE_SHEET_WEB_APP_URL) {
+      try {
+        await fetch(process.env.GOOGLE_SHEET_WEB_APP_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: cleanEmail,
+            phone: cleanPhone,
+            source: cleanPhone ? "phone-login" : "email-login",
+            loginTime: new Date().toISOString(),
+          }),
+        });
+      } catch (sheetError) {
+        console.error("Google Sheet save failed:", sheetError);
+      }
+    }
+
+    const demoUser = {
+      id: Date.now(),
+      name: cleanEmail ? cleanEmail.split("@")[0] : cleanPhone,
+      email: cleanEmail,
+      phone: cleanPhone,
+    };
+
+    const token = jwt.sign(
+      {
+        id: demoUser.id,
+        email: demoUser.email,
+        phone: demoUser.phone,
+        name: demoUser.name,
+      },
+      JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+
     return res.json({
       success: true,
-      user,
+      message: "Login successful.",
+      token,
+      user: demoUser,
     });
-  } catch {
-    return res.status(401).json({
+  } catch (error) {
+    console.error("Login error:", error);
+
+    return res.status(500).json({
       success: false,
-      message: "Invalid token",
+      message: "Something went wrong during login.",
     });
   }
 });
