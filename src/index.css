@@ -1087,114 +1087,119 @@ a {
     padding-bottom: 95px;
   }
 
-  .mobile-profile-header-99 {
-    height: 97px;
-    background: #0875bf;
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    padding: 0 28px;
-    color: #ffffff;
-  }
+.mobile-profile-header-99 {
+  height: 72px;
+  background: #0875bf;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 22px;
+  color: #ffffff;
+}
 
-  .mobile-inner-menu-99 {
-    border: 0;
-    background: transparent;
-    color: #ffffff;
-    font-size: 42px;
-    line-height: 1;
-    padding: 0;
-  }
+.mobile-inner-menu-99 {
+  border: 0;
+  background: transparent;
+  color: #ffffff;
+  font-size: 32px;
+  line-height: 1;
+  padding: 0;
+}
 
-  .mobile-inner-logo-99 {
-    border: 0;
-    background: transparent;
-    color: #ffffff;
-    font-size: 38px;
-    font-weight: 950;
-    letter-spacing: -1px;
-    padding: 0;
-  }
+.mobile-inner-logo-99 {
+  border: 0;
+  background: transparent;
+  color: #ffffff;
+  font-size: 27px;
+  font-weight: 950;
+  letter-spacing: -0.6px;
+  padding: 0;
+}
 
-  .mobile-profile-hero-99 {
-    min-height: 512px;
-    background: #f3f3f3;
-    text-align: center;
-    padding: 74px 26px 54px;
-  }
+.mobile-profile-hero-99 {
+  min-height: 360px;
+  background: #f3f3f3;
+  text-align: center;
+  padding: 52px 24px 40px;
+}
 
-  .mobile-profile-big-avatar-99 {
-    width: 174px;
-    height: 174px;
-    margin: 0 auto;
-    border-radius: 999px;
-    background: #f8f8f8;
-    color: #667085;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.mobile-profile-big-avatar-99 {
+  width: 132px;
+  height: 132px;
+  margin: 0 auto;
+  border-radius: 999px;
+  background: #f8f8f8;
+  color: #667085;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .mobile-profile-hero-99 h1 {
-    margin: 24px 0 0;
-    color: #0875bf;
-    font-size: 31px;
-    line-height: 1.1;
-    font-weight: 900;
-  }
+.mobile-profile-big-avatar-99 svg {
+  width: 84px;
+  height: 84px;
+}
 
-  .mobile-profile-hero-99 p {
-    margin: 22px 0 0;
-    color: #333333;
-    font-size: 28px;
-    line-height: 1.25;
-    font-weight: 400;
-  }
+.mobile-profile-hero-99 h1 {
+  margin: 20px 0 0;
+  color: #0875bf;
+  font-size: 24px;
+  line-height: 1.15;
+  font-weight: 900;
+}
 
-  .mobile-profile-list-99 {
-    background: #eeeeee;
-  }
+.mobile-profile-hero-99 p {
+  margin: 16px 0 0;
+  color: #333333;
+  font-size: 18px;
+  line-height: 1.35;
+  font-weight: 400;
+}
 
-  .mobile-profile-list-99 button {
-    width: 100%;
-    min-height: 84px;
-    border: 0;
-    border-bottom: 1px solid #e2e2e2;
-    background: #ffffff;
-    color: #222222;
-    display: grid;
-    grid-template-columns: 52px 1fr 28px;
-    align-items: center;
-    gap: 0;
-    padding: 0 26px;
-    text-align: left;
-  }
+.mobile-profile-list-99 {
+  background: #eeeeee;
+}
 
-  .mobile-profile-list-99 button:nth-child(3) {
-    margin-top: 48px;
-  }
+.mobile-profile-list-99 button {
+  width: 100%;
+  min-height: 66px;
+  border: 0;
+  border-bottom: 1px solid #e2e2e2;
+  background: #ffffff;
+  color: #222222;
+  display: grid;
+  grid-template-columns: 38px 1fr 20px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 22px;
+  text-align: left;
+}
 
-  .mobile-profile-list-99 span {
-    color: #4a525e;
-    font-size: 33px;
-    line-height: 1;
-  }
+.mobile-profile-list-99 button:nth-child(3) {
+  margin-top: 34px;
+}
 
-  .mobile-profile-list-99 strong {
-    color: #222222;
-    font-size: 29px;
-    line-height: 1.1;
-    font-weight: 700;
-  }
+.mobile-profile-list-99 span {
+  color: #4a525e;
+  font-size: 24px;
+  line-height: 1;
+}
 
-  .mobile-profile-list-99 em {
-    color: #071f3f;
-    font-size: 43px;
-    line-height: 1;
-    font-style: normal;
-    font-weight: 300;
-    text-align: right;
-  }
+.mobile-profile-list-99 strong {
+  color: #222222;
+  font-size: 20px;
+  line-height: 1.15;
+  font-weight: 700;
+}
+
+.mobile-profile-list-99 em {
+  color: #071f3f;
+  font-size: 30px;
+  line-height: 1;
+  font-style: normal;
+  font-weight: 300;
+  text-align: right;
+}
 
   .mobile-bottom-nav-inner-99 {
     z-index: 1900;
@@ -1677,20 +1682,20 @@ a {
   }
 
   .mobile-profile-login-click-99 h1 {
-    margin: 24px 0 0;
-    color: #0875bf;
-    font-size: 31px;
-    line-height: 1.1;
-    font-weight: 900;
-  }
+  margin: 20px 0 0;
+  color: #0875bf;
+  font-size: 24px;
+  line-height: 1.15;
+  font-weight: 900;
+}
 
-  .mobile-profile-login-click-99 p {
-    margin: 22px 0 0;
-    color: #333333;
-    font-size: 28px;
-    line-height: 1.25;
-    font-weight: 400;
-  }
+.mobile-profile-login-click-99 p {
+  margin: 16px 0 0;
+  color: #333333;
+  font-size: 18px;
+  line-height: 1.35;
+  font-weight: 400;
+}
 }
 
 @media (max-width: 768px) {
@@ -5205,21 +5210,21 @@ a {
     padding: 0 40px 56px;
   }
 
-  .mobile-insights-section-99 h2 {
-    margin: 0;
-    color: #071f3f;
-    font-size: 39px;
-    line-height: 1.15;
-    font-weight: 950;
-    letter-spacing: -0.6px;
-  }
+.mobile-insights-section-99 h2 {
+  margin: 0;
+  color: #071f3f;
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 950;
+  letter-spacing: -0.35px;
+}
 
-  .mobile-insights-section-99 > p {
-    margin: 8px 0 28px;
-    color: #536073;
-    font-size: 27px;
-    line-height: 1.25;
-  }
+.mobile-insights-section-99 > p {
+  margin: 6px 0 22px;
+  color: #536073;
+  font-size: 15px;
+  line-height: 1.35;
+}
 
   .mobile-insights-horizontal-99,
   .mobile-discover-row-99,
@@ -8929,11 +8934,11 @@ a {
 
 .mobile-property-tile-99 strong {
   display: block;
-  margin-top: 14px;
+  margin-top: 10px;
   overflow: hidden;
-  font-size: 21px;
+  font-size: 17px;
   font-weight: 900;
-  line-height: 1.15;
+  line-height: 1.18;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -8943,7 +8948,7 @@ a {
   display: block;
   overflow: hidden;
   color: #8a93a3;
-  font-size: 17px;
+  font-size: 14px;
   line-height: 1.25;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -8958,16 +8963,18 @@ a {
 
 .mobile-projects-home-99 h2,
 .mobile-localities-like-99 h2 {
-  font-size: 34px;
+  font-size: 24px;
   font-weight: 900;
-  line-height: 1.08;
+  line-height: 1.18;
+  letter-spacing: -0.3px;
 }
 
 .mobile-projects-home-99 > p,
 .mobile-localities-like-99 > p {
-  margin-top: 8px;
+  margin-top: 6px;
   color: #8a93a3;
-  font-size: 22px;
+  font-size: 15px;
+  line-height: 1.35;
 }
 
 .mobile-project-row-99 {
@@ -9288,16 +9295,16 @@ a {
 
 .mobile-home-extra-99 h2 {
   margin: 0;
-  font-size: 28px;
-  line-height: 1.15;
+  font-size: 23px;
+  line-height: 1.2;
   font-weight: 900;
-  letter-spacing: -0.6px;
+  letter-spacing: -0.35px;
   color: #06152e;
 }
 
 .mobile-home-extra-99 p {
-  margin: 8px 0 0;
-  font-size: 18px;
+  margin: 6px 0 0;
+  font-size: 15px;
   line-height: 1.35;
   color: #8d96a4;
 }
@@ -9342,8 +9349,8 @@ a {
 .mobile-big-category-card-99 strong,
 .mobile-possession-home-99 strong {
   display: block;
-  font-size: 28px;
-  line-height: 1.18;
+  font-size: 21px;
+  line-height: 1.2;
   font-weight: 900;
   color: #06152e;
 }
@@ -9351,8 +9358,8 @@ a {
 .mobile-big-category-card-99 span,
 .mobile-possession-home-99 span {
   display: block;
-  margin-top: 14px;
-  font-size: 18px;
+  margin-top: 10px;
+  font-size: 14px;
   color: #8c95a3;
 }
 
@@ -10205,5 +10212,398 @@ a {
 
   .mobile-login-email-99 span {
     font-size: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-99-home h2 {
+    font-size: 23px;
+    line-height: 1.2;
+  }
+
+  .mobile-99-home h3 {
+    font-size: 18px;
+    line-height: 1.25;
+  }
+
+  .mobile-99-home p {
+    font-size: 15px;
+    line-height: 1.35;
+  }
+
+  .mobile-99-home strong {
+    line-height: 1.2;
+  }
+
+  .mobile-view-all-localities-99,
+  .mobile-view-all-link-99,
+  .mobile-blue-full-btn-99,
+  .mobile-outline-blue-btn-99 {
+    font-size: 18px;
+    line-height: 1.25;
+  }
+}
+@media (max-width: 768px) {
+  .mobile-inner-page-99 .mobile-profile-header-99 {
+    height: 72px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-inner-menu-99 {
+    font-size: 32px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-inner-logo-99 {
+    font-size: 27px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-hero-99 {
+    min-height: 360px !important;
+    padding: 52px 24px 40px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-big-avatar-99 {
+    width: 132px !important;
+    height: 132px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-big-avatar-99 svg {
+    width: 84px !important;
+    height: 84px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-login-click-99 h1,
+  .mobile-inner-page-99 .mobile-profile-hero-99 h1 {
+    font-size: 24px !important;
+    margin-top: 20px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-login-click-99 p,
+  .mobile-inner-page-99 .mobile-profile-hero-99 p {
+    font-size: 18px !important;
+    line-height: 1.35 !important;
+    margin-top: 16px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-list-99 button {
+    min-height: 66px !important;
+    grid-template-columns: 38px 1fr 20px !important;
+    padding: 0 22px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-list-99 span {
+    font-size: 24px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-list-99 strong {
+    font-size: 20px !important;
+    line-height: 1.15 !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-list-99 em {
+    font-size: 30px !important;
+  }
+}
+
+/* FINAL MOBILE TYPOGRAPHY FIX - keep this at very bottom */
+@media (max-width: 768px) {
+  /* Common page main headings */
+  .mobile-99-home h1,
+  .mobile-search-page-99 h1,
+  .mobile-owner-page-99 h1,
+  .mobile-new-project-page-99 h1,
+  .mobile-insights-page-99 h1,
+  .mobile-post-property-page-99 h1,
+  .mobile-shortlist-page-99 h1,
+  .mobile-localities-page-99 h1,
+  .mobile-plot-page-99 h1,
+  .mobile-invest-page-99 h1,
+  .mobile-knowledge-page-99 h1,
+  .mobile-feedback-page-99 h1,
+  .mobile-my-property-page-99 h1,
+  .mobile-price-trends-page-99 h1 {
+    font-size: 27px !important;
+    line-height: 1.22 !important;
+    letter-spacing: -0.35px !important;
+  }
+
+  /* Common section headings */
+  .mobile-99-home h2,
+  .mobile-search-page-99 h2,
+  .mobile-owner-page-99 h2,
+  .mobile-new-project-page-99 h2,
+  .mobile-insights-page-99 h2,
+  .mobile-post-property-page-99 h2,
+  .mobile-shortlist-page-99 h2,
+  .mobile-localities-page-99 h2,
+  .mobile-plot-page-99 h2,
+  .mobile-invest-page-99 h2,
+  .mobile-knowledge-page-99 h2,
+  .mobile-feedback-page-99 h2,
+  .mobile-my-property-page-99 h2,
+  .mobile-price-trends-page-99 h2 {
+    font-size: 23px !important;
+    line-height: 1.22 !important;
+    letter-spacing: -0.25px !important;
+  }
+
+  /* Small headings inside cards */
+  .mobile-99-home h3,
+  .mobile-search-page-99 h3,
+  .mobile-owner-page-99 h3,
+  .mobile-new-project-page-99 h3,
+  .mobile-insights-page-99 h3,
+  .mobile-post-property-page-99 h3,
+  .mobile-shortlist-page-99 h3,
+  .mobile-localities-page-99 h3,
+  .mobile-plot-page-99 h3,
+  .mobile-invest-page-99 h3,
+  .mobile-knowledge-page-99 h3,
+  .mobile-feedback-page-99 h3,
+  .mobile-my-property-page-99 h3,
+  .mobile-price-trends-page-99 h3 {
+    font-size: 18px !important;
+    line-height: 1.25 !important;
+  }
+
+  /* Paragraph / subtitle text */
+  .mobile-99-home p,
+  .mobile-search-page-99 p,
+  .mobile-owner-page-99 p,
+  .mobile-new-project-page-99 p,
+  .mobile-insights-page-99 p,
+  .mobile-post-property-page-99 p,
+  .mobile-shortlist-page-99 p,
+  .mobile-localities-page-99 p,
+  .mobile-plot-page-99 p,
+  .mobile-invest-page-99 p,
+  .mobile-knowledge-page-99 p,
+  .mobile-feedback-page-99 p,
+  .mobile-my-property-page-99 p,
+  .mobile-price-trends-page-99 p {
+    font-size: 15px !important;
+    line-height: 1.38 !important;
+  }
+
+  /* Card title text that was looking too big */
+  .mobile-menu-action-card-99 h3,
+  .mobile-menu-list-card-99 strong,
+  .mobile-menu-three-grid-99 strong,
+  .mobile-menu-two-grid-99 strong,
+  .mobile-np-title-row-99 h2,
+  .mobile-owner-title-row-99 h2,
+  .mobile-owner-price-grid-99 strong,
+  .mobile-owner-contact-row-99 strong,
+  .mobile-owner-around-title-99 h2,
+  .mobile-owner-around-scroll-99 strong,
+  .mobile-insight-card-99 strong,
+  .mobile-discover-card-99 strong,
+  .mobile-rank-card-99 p span,
+  .mobile-goal-row-99 strong,
+  .mobile-city-row-99 strong,
+  .mobile-tools-blue-99 strong,
+  .mobile-editor-row-99 strong,
+  .mobile-knowledge-item-99 strong,
+  .mobile-knowledge-trending-list-99 strong,
+  .mobile-knowledge-tool-scroll-99 strong,
+  .mobile-knowledge-cities-99 strong,
+  .mobile-invest-options-99 strong,
+  .mobile-invest-videos-99 strong,
+  .mobile-invest-card-99 strong,
+  .mobile-plot-card-99 strong,
+  .mobile-shortlist-page-99 strong,
+  .mobile-localities-page-99 strong {
+    font-size: 18px !important;
+    line-height: 1.25 !important;
+  }
+
+  /* Card subtitle / description text */
+  .mobile-menu-action-card-99 p,
+  .mobile-menu-list-card-99 p,
+  .mobile-menu-three-grid-99 p,
+  .mobile-menu-two-grid-99 p,
+  .mobile-np-subtitle-99,
+  .mobile-np-desc-99,
+  .mobile-owner-desc-99,
+  .mobile-owner-around-scroll-99 p,
+  .mobile-insight-card-99 p,
+  .mobile-discover-card-99 p,
+  .mobile-city-row-99 p,
+  .mobile-tools-blue-99 button p,
+  .mobile-editor-row-99 p,
+  .mobile-knowledge-item-99 p,
+  .mobile-knowledge-trending-list-99 p,
+  .mobile-knowledge-tool-scroll-99 p,
+  .mobile-knowledge-cities-99 span,
+  .mobile-invest-videos-99 p,
+  .mobile-invest-list-section-99 p,
+  .mobile-invest-options-99 span {
+    font-size: 14px !important;
+    line-height: 1.35 !important;
+  }
+
+  /* Blue / outline CTA buttons text */
+  .mobile-blue-full-btn-99,
+  .mobile-outline-blue-btn-99,
+  .mobile-outline-btn-99,
+  .mobile-view-all-localities-99,
+  .mobile-view-all-link-99,
+  .mobile-insights-view-all-99,
+  .mobile-search-footer-99 button,
+  .mobile-np-actions-99 button,
+  .mobile-owner-contact-row-99 button:nth-child(2),
+  .mobile-invest-submit-99 {
+    font-size: 17px !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Profile page exact compact size like real screenshot */
+  .mobile-inner-page-99 .mobile-profile-hero-99 {
+    min-height: 330px !important;
+    padding: 46px 24px 34px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-big-avatar-99 {
+    width: 118px !important;
+    height: 118px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-big-avatar-99 svg {
+    width: 74px !important;
+    height: 74px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-login-click-99 h1,
+  .mobile-inner-page-99 .mobile-profile-hero-99 h1 {
+    font-size: 21px !important;
+    line-height: 1.18 !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-login-click-99 p,
+  .mobile-inner-page-99 .mobile-profile-hero-99 p {
+    font-size: 13px !important;
+    line-height: 1.35 !important;
+    max-width: 260px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-list-99 button {
+    min-height: 58px !important;
+  }
+
+  .mobile-inner-page-99 .mobile-profile-list-99 strong {
+    font-size: 18px !important;
+  }
+
+  /* Login sheet text compact */
+  .mobile-login-sheet-real-99 h2 {
+    font-size: 30px !important;
+    line-height: 1.12 !important;
+  }
+
+  .mobile-login-sheet-real-99 > p {
+    font-size: 17px !important;
+    line-height: 1.3 !important;
+  }
+
+  .mobile-login-email-99 {
+    font-size: 17px !important;
+    line-height: 1.25 !important;
+  }
+
+  .mobile-login-email-99 span {
+    font-size: 15px !important;
+  }
+}
+
+/* FINAL LOGIN MODAL SIZE FIX - keep this at very bottom */
+@media (max-width: 768px) {
+  .mobile-login-sheet-real-99 {
+    min-height: 60vh !important;
+    max-height: 82vh !important;
+    padding: 52px 40px 92px !important;
+    border-radius: 30px 30px 0 0 !important;
+  }
+
+  .mobile-login-drag-99 {
+    top: 16px !important;
+    width: 92px !important;
+    height: 5px !important;
+  }
+
+  .mobile-login-sheet-real-99 h2 {
+    font-size: 24px !important;
+    line-height: 1.12 !important;
+    font-weight: 950 !important;
+    letter-spacing: -0.2px !important;
+  }
+
+  .mobile-login-sheet-real-99 > p {
+    margin-top: 10px !important;
+    font-size: 13px !important;
+    line-height: 1.3 !important;
+    color: #8f98a8 !important;
+  }
+
+  .mobile-login-phone-box-99 {
+    height: 82px !important;
+    margin-top: 48px !important;
+    border: 2px solid #087cc1 !important;
+    padding: 11px 14px !important;
+  }
+
+  .mobile-login-phone-box-99 label {
+    font-size: 15px !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+  }
+
+  .mobile-login-phone-box-99 > div {
+    margin-top: 12px !important;
+    grid-template-columns: 72px 2px 1fr !important;
+    gap: 14px !important;
+  }
+
+  .mobile-login-phone-box-99 button {
+    font-size: 19px !important;
+  }
+
+  .mobile-login-phone-box-99 span {
+    height: 36px !important;
+  }
+
+  .mobile-login-phone-box-99 input {
+    font-size: 20px !important;
+    line-height: 1 !important;
+    height: 32px !important;
+  }
+
+  .mobile-login-continue-99 {
+    height: 52px !important;
+    margin-top: 20px !important;
+    border-radius: 5px !important;
+    font-size: 18px !important;
+    font-weight: 900 !important;
+  }
+
+  .mobile-login-email-99 {
+    margin-top: 42px !important;
+    font-size: 14px !important;
+    line-height: 1.25 !important;
+    font-weight: 800 !important;
+    padding-bottom: 12px !important;
+    color: #374151 !important;
+  }
+
+  .mobile-login-email-99 span {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #6b7280 !important;
+  }
+
+  .mobile-login-error-99 {
+    margin-top: 10px !important;
+    font-size: 13px !important;
+    line-height: 1.25 !important;
   }
 }

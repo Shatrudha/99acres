@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { loginWithEmailPassword, registerWithEmailPassword } from "../api/authApi";
+import {
+  loginWithEmailPassword,
+  registerWithEmailPassword,
+  saveLoginToGoogleSheet,
+} from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 import {
   CheckCircle,
@@ -436,24 +440,11 @@ const handleSendOtp = async () => {
   try {
     setAuthLoading(true);
 
-    const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        countryCode: loginCountryCode,
-        phone: cleanPhone,
-      }),
+    const data = await saveLoginToGoogleSheet({
+      countryCode: loginCountryCode,
+      phone: cleanPhone,
+      source: "phone-login",
     });
-
-    const data = await res.json();
-
-    if (!res.ok || !data.success) {
-      setLoginError(true);
-      setOtpError(data.message || "Login failed. Please try again.");
-      return;
-    }
 
     if (data.token) {
       localStorage.setItem("token", data.token);
@@ -476,7 +467,7 @@ const handleSendOtp = async () => {
   } catch (error) {
     console.error("Phone login error:", error);
     setLoginError(true);
-    setOtpError("Cannot connect to backend. Please check backend is running on port 5000.");
+    setOtpError("Unable to save login. Please try again.");
   } finally {
     setAuthLoading(false);
   }

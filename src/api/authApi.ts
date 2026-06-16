@@ -1,5 +1,5 @@
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const GOOGLE_SHEET_WEB_APP_URL =
+  "https://script.google.com/macros/s/AKfycbxjZ-Vny2fLkdH4ABHo6sI8lGy0BfWYBeR0jrc-Q1z3AHVebxx6AW03VRksTZQd_CXnfg/exec";
 
 export type AuthResponse = {
   success: boolean;
@@ -10,48 +10,69 @@ export type AuthResponse = {
     name?: string;
     email?: string;
     phone?: string;
+    countryCode?: string;
   };
 };
 
-export async function loginWithEmailPassword(
-  email: string,
-  password: string
+type GoogleSheetLoginPayload = {
+  email?: string;
+  phone?: string;
+  countryCode?: string;
+  source: "phone-login" | "email-login" | "register-login";
+};
+
+export async function saveLoginToGoogleSheet(
+  payload: GoogleSheetLoginPayload
 ): Promise<AuthResponse> {
-  const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+  const now = new Date().toISOString();
+
+  await fetch(GOOGLE_SHEET_WEB_APP_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, password }),
+    mode: "no-cors",
+    body: JSON.stringify({
+      email: payload.email || "",
+      phone: payload.phone || "",
+      countryCode: payload.countryCode || "",
+      source: payload.source,
+      loginTime: now,
+    }),
   });
 
-  const data = await response.json();
+  const demoUser = {
+    id: Date.now(),
+    name: payload.email
+      ? payload.email.split("@")[0]
+      : payload.phone || "Guest User",
+    email: payload.email || "",
+    phone: payload.phone || "",
+    countryCode: payload.countryCode || "",
+  };
 
-  if (!response.ok || !data.success) {
-    throw new Error(data.message || "Login failed");
-  }
+  return {
+    success: true,
+    message: "Login successful.",
+    token: `demo-token-${Date.now()}`,
+    user: demoUser,
+  };
+}
 
-  return data;
+export async function loginWithEmailPassword(
+  email: string,
+  _password: string
+): Promise<AuthResponse> {
+  return saveLoginToGoogleSheet({
+    email: email.trim().toLowerCase(),
+    source: "email-login",
+  });
 }
 
 export async function registerWithEmailPassword(
   name: string,
   email: string,
-  password: string
+  _password: string
 ): Promise<AuthResponse> {
-  const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ name, email, password }),
+  return saveLoginToGoogleSheet({
+    email: email.trim().toLowerCase(),
+    source: "register-login",
   });
-
-  const data = await response.json();
-
-  if (!response.ok || !data.success) {
-    throw new Error(data.message || "Registration failed");
-  }
-
-  return data;
 }
